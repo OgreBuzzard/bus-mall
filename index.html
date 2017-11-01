@@ -3,7 +3,7 @@
   <head>
     <title>Bus Mall</title>
 <!-- <link rel="stylesheet" href="reset.css"> -->
-<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <header>
@@ -11,20 +11,11 @@
       <h2>Focus Group Product Tester</h2>
     </header>
     <main>
-      <div id="prod1" class="product">
-        <img src="https://placeimg.com/280/180/any">
-        <p>Product 1</p>
-      </div>
-      <div id="prod2" class="product">
-        <img src="https://placeimg.com/280/180/any">
-        <p>Product 2</p>
-      </div>
-      <div id="prod3" class="product">
-        <img src="https://placeimg.com/280/180/any">
-        <p>Product 3</p>
-      </div>
-      <table>
-      </table>
+      <ul id="prodPicker">
+        <li class="productList"><img id="prodLeft" class="product"><p>Product 1</p></li>
+        <li class="productList"><img id="prodCenter" class="product"><p>Product 2</p></li>
+        <li class="productList"><img id="prodRight" class="product"><p>Product 3</p></li>
+      <ul id="results"></ul>
     </main>
   </body>
   <script src="app.js"></script>
