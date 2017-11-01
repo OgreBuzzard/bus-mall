@@ -1,9 +1,12 @@
 'use strict';
 
-// A list of images in an array.
+// Create the global varialbes: a click counter, a trigger, an array for which products are in each slot on the page, and a list of images in an array.
+var trialCounter = 0;
+var trialTrigger = 25;
+var imageSlot = [];
 var images = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'usb', 'water-can', 'wine-glass'];
 
-// A constructor function that creates objects out of each image in the array and applies properties to them.
+// A constructor function that creates objects out of each image in the array and applies properties to them. The first letter of each product name is capitalized.
 function Product(name) {
   var nameArray = name.split('');
   var firstLetter = name.split('')[0].toUpperCase();
@@ -15,26 +18,18 @@ function Product(name) {
   this.justShown = false;
 };
 
-// Use the constructor function to push the objects into a new array.
+// Uses the constructor function to push the objects into a new product array.
 var products = [];
 for (var i = 0; i < images.length; i++) {
   products.push (new Product(images[i]));
 };
 
-// Create a click counter, a trigger, and an array for which products are in each slot
-var trialCounter = 0;
-var trialTrigger = 25;
-var imageSlot = [];
-
-// Pick a random product from the array
+// Picks a random product from the array.
 var randomProduct = function() {
   return Math.floor(Math.random() * (products.length));
 };
 
-// grab the image locations and counter position
-// var progress = document.getElementById('progress');
-
-// Assign a random image to each of the three product slots, make sure no picture is shown twice or was just shown in that slot, and track how many times each image was shown
+// Assigns a random image to each of the three product slots and makes sure no picture is shown twice or was just shown in that slot.
 var pickProducts = function() {
   var prodLeft = randomProduct();
   while (products[prodLeft].justShown === true) {
@@ -51,18 +46,18 @@ var pickProducts = function() {
   if (imageSlot.length > 0) {
     justShownFalse(imageSlot[0], imageSlot[1], imageSlot[2]);
   }
-  console.log('Left: ', prodLeft, 'Center: ', prodRight, 'Right: ', prodCenter);
+  // console.log('Left: ', prodLeft, 'Center: ', prodRight, 'Right: ', prodCenter);
   return [prodLeft, prodCenter, prodRight];
 };
 
-// Reset justShown to false
+// Resets justShown to false, so it can be displayed again.
 function justShownFalse(left, center, right) {
   products[left].justShown = false;
   products[center].justShown = false;
   products[right].justShown = false;
 };
 
-// Draw the three products on the page, increment the counter for each product shown, and set the justShown flag to true
+// Draws the three products on the page, increments the counter for each product shown, and sets the justShown flag to true.
 var drawProduct = function() {
   imageSlot = pickProducts();
   document.getElementById('prodLeft').src = products[imageSlot[0]].fileName;
@@ -79,16 +74,23 @@ var drawProduct = function() {
 
 drawProduct();
 
-// Check for clicks on the three products
+// Checks for clicks on the three displayed products.
 document.getElementById('prodLeft').addEventListener('click', clickEvent);
 document.getElementById('prodCenter').addEventListener('click', clickEvent);
 document.getElementById('prodRight').addEventListener('click', clickEvent);
 
-// Track which product the user clicked on, run updateCounters, then generate a new set of pictures
+// Tracks which product the user clicked on, increments the clicked counter for that product, increments the trial counter, then generates a new set of pictures.
 function clickEvent(event) {
   var targetFileName = event.target.src;
   targetFileName = targetFileName.split('bus-mall/')[1];
-  updateCounters(targetFileName);
+  // updateCounters(targetFileName);
+  for (var j = 0; j < products.length; j++) {
+    if (targetFileName === products[j].fileName) {
+      products[j].totalClicks++;
+      trialCounter++;
+      break;
+    }
+  }
   if (trialCounter >= trialTrigger) {
     showResult();
     return;
@@ -97,16 +99,17 @@ function clickEvent(event) {
 }
 
 // Increment the click counter for the selected product, and the trial counter
-function updateCounters(targetFileName) {
-  for (var j = 0; j < products.length; j++) {
-    if (targetFileName === products[j].fileName) {
-      products[j].totalClicks++;
-      trialCounter++;
-      break;
-    }
-  }
-}
+// function updateCounters(targetFileName) {
+//   for (var j = 0; j < products.length; j++) {
+//     if (targetFileName === products[j].fileName) {
+//       products[j].totalClicks++;
+//       trialCounter++;
+//       break;
+//     }
+//   }
+// }
 
+// Displays the click results for each product.
 function showResult() {
   document.getElementById('prodLeft').removeEventListener('click', clickEvent);
   document.getElementById('prodCenter').removeEventListener('click', clickEvent);
