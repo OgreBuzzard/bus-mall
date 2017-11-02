@@ -4,14 +4,14 @@
 var trialCounter = 0;
 var trialTrigger = 25;
 var imageSlot = [];
+var productsShown = [];
+var productsClicked = [];
+var productsNames = [];
 var images = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'usb', 'water-can', 'wine-glass'];
 
 // A constructor function that creates objects out of each image in the array and applies properties to them. The first letter of each product name is capitalized.
 function Product(name) {
-  var nameArray = name.split('');
-  var firstLetter = name.split('')[0].toUpperCase();
-  nameArray[0] = firstLetter;
-  this.name = nameArray.join('');
+  this.name = name;
   this.fileName = 'image/' + name + '.jpg';
   this.totalClicks = 0;
   this.totalShown = 0;
@@ -21,7 +21,7 @@ function Product(name) {
 // Uses the constructor function to push the objects into a new product array.
 var products = [];
 for (var i = 0; i < images.length; i++) {
-  products.push (new Product(images[i]));
+  products.push(new Product(images[i]));
 };
 
 // Picks a random product from the array.
@@ -81,11 +81,10 @@ document.getElementById('prodRight').addEventListener('click', clickEvent);
 
 // Tracks which product the user clicked on, increments the clicked counter for that product, increments the trial counter, then generates a new set of pictures.
 function clickEvent(event) {
-  var targetFileName = event.target.src;
-  targetFileName = targetFileName.split('bus-mall/')[1];
-  // updateCounters(targetFileName);
+  var targetName = event.target.src;
+  targetName = targetName.split('image/')[1].split('.jpg')[0];
   for (var j = 0; j < products.length; j++) {
-    if (targetFileName === products[j].fileName) {
+    if (targetName === products[j].name) {
       products[j].totalClicks++;
       trialCounter++;
       break;
@@ -98,125 +97,68 @@ function clickEvent(event) {
   drawProduct();
 }
 
-// Increment the click counter for the selected product, and the trial counter
-// function updateCounters(targetFileName) {
-//   for (var j = 0; j < products.length; j++) {
-//     if (targetFileName === products[j].fileName) {
-//       products[j].totalClicks++;
-//       trialCounter++;
-//       break;
-//     }
-//   }
-// }
-
-// Displays the click results for each product.
+// Shuts off the event listeners, runs capitalizeName, pushes the data into empty arrays for the chart, then runs make chart.
 function showResult() {
   document.getElementById('prodLeft').removeEventListener('click', clickEvent);
   document.getElementById('prodCenter').removeEventListener('click', clickEvent);
   document.getElementById('prodRight').removeEventListener('click', clickEvent);
-  var li = '';
-  var ul = document.getElementById('results');
-  for (var i = 0;i < products.length; i++) {
-    li = li + '<li>' + products[i].totalClicks + ' click out of ' + products[i].totalShown + ' for the ' + products[i].name + '</li>';
+  var capitalizedName;
+  for (var l = 0; l < products.length; l++) {
+    productsShown.push(products[l].totalShown);
+    productsClicked.push(products[l].totalClicks);
+    capitalizedName = capitalizeName(products[l].name);
+    productsNames.push(capitalizedName);
   }
-  ul.innerHTML = li;
+  // var li = '';
+  // var ul = document.getElementById('results');
+  // for (var i = 0;i < products.length; i++) {
+  //   li = li + '<li>' + products[i].totalClicks + ' click out of ' + products[i].totalShown + ' for the ' + products[i].name + '</li>';
+  // }
+  // ul.innerHTML = li;
+  makeChart();
 }
 
-// // When the user has clicked on 25 products, display a table at the bottom that shows:
-// // - how many times each product was picked
-// // - how many times each product was displayed
-// // - number of times it was picked as a percentage of number of times shown
-//
-// prodPicker
-//
-// cat.addEventListener('click', function() {
-//   counter++;
-//   var src = this.getAttribute('src');
-//   console.log('image src:', src);
-//   console.log('total cat clicks:', counter);
-// });
-//
-// dog.addEventListener('click', function() {
-//   var src = this.getAttribute('src');
-//   var name = this.getAttribute('id');
-//
-//   images.push(new Tracker(name, src));
-//   console.log(images);
-// });
-//
-// // JEREMY'S CODE
-//
-// // give a ticker +1 for objects selected
-// function displayRandomImages() {
-//   var randImageLeft = -1;
-//   var randImageCenter = -1;
-//   var randImageRight = -1;
-// }
-//
-// // increment trial counter
-// trialCounter++
-//
-//
-// // check if trial counter is less than 25
-// // after 25 trials (or assigned number) then display statistics
-// if (trialCounter === numOfTrials) {
-//   var entryPoint;
-//   var prodPercent;
-//   for (var j = 0; j < arrOfProd.length; j++) {
-//     entryPoint = document.createElement('p');
-//     prodPercent = Math.round(arrOfProd[j].clicks / arrOfProd[j].totalShown * 100);
-//     entryPoint.innerHTML = 'Product: ' + arrOfProd[j].name + ', Number of times shown.';
-//   }
-//   imageLeft.style.display = 'none';
-//   imageCenter.style.display = 'none';
-//   imageRight.style.display = 'none';
-// }
-//
-// // place images on page
-//
-// progress.innerHTML = 'Product trial ' + trialCounter = '/25';
-//
-// imageLeft.addEventListener
+// Capitalizes the first letter of each product name.
+function capitalizeName(name) {
+  var nameArray = name.split('');
+  var firstLetter = name.split('')[0].toUpperCase();
+  nameArray[0] = firstLetter;
+  name = nameArray.join('');
+  return name;
+}
 
-// Jordan's CODE
-
-// var previousImage = [1, 2, 3]; // array to hold the three previous images
-//
-// var objectNames = []
-// var objectShowings = []
-// var objectClickings = []
-//
-// var makeChar = function() {
-//   var ctx = document.getElementById('dataChart').getContext('2d');
-//   ctx.canvas.width = '1000';
-//   ctx.canvas.height = '250';
-//   var chart = new Chart(ctx, {
-//     type: 'bar',
-//
-//     data: {
-//       labels: objectNames,
-//       datasets: [{
-//         label: "Times Seen",
-//         background-color: '#f2f2f2',
-//         borderColor: '#000',
-//         data: objectShowings,
-//       },
-//       {
-//         label: "Times Clicked",
-//         background-color: #000,
-//       }
-//     ]
-//     }
-//   })
-//
-// options: {
-//   scales: {
-//     yAxes: [{
-//       ticks: {
-//         beginAtZero: true;
-//       }
-//     }]
-//   }
-// }
-//
-// }
+// Draws the chart
+var makeChart = function() {
+  var ctx = document.getElementById('productChart').getContext('2d');
+  ctx.canvas.width = '960';
+  ctx.canvas.height = '250';
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: productsNames,
+      datasets: [{
+        label: 'Times Shown',
+        data: productsShown,
+        backgroundColor: '#27AE60',
+        borderColor: '#000',
+        borderWidth: 1
+      },
+      {
+        label: 'Times Selected',
+        data: productsClicked,
+        backgroundColor: '#F39C12',
+        borderColor: '#000',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+};
