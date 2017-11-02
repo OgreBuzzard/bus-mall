@@ -16,6 +16,11 @@ header {
   padding: 10px;
 }
 
+h1, h2 {
+  margin: 5px;
+  padding: 5px;
+}
+
 .prodPicker {
   overflow: auto;
   height: 100%;
