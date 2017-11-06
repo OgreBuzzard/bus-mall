@@ -9,6 +9,11 @@ var productsClicked = [];
 var productsNames = [];
 var images = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'usb', 'water-can', 'wine-glass'];
 
+if (localStorage.productsShown && localStorage.productsClicked) {
+  productsShown = JSON.parse(localStorage.productsShown);
+  productsClicked = JSON.parse(localStorage.productsClicked);
+}
+
 // A constructor function that creates objects out of each image in the array and applies properties to them. The first letter of each product name is capitalized.
 function Product(name) {
   this.name = name;
@@ -46,7 +51,6 @@ var pickProducts = function() {
   if (imageSlot.length > 0) {
     justShownFalse(imageSlot[0], imageSlot[1], imageSlot[2]);
   }
-  // console.log('Left: ', prodLeft, 'Center: ', prodRight, 'Right: ', prodCenter);
   return [prodLeft, prodCenter, prodRight];
 };
 
@@ -61,8 +65,12 @@ function justShownFalse(left, center, right) {
 var drawProduct = function() {
   imageSlot = pickProducts();
   document.getElementById('prodLeft').src = products[imageSlot[0]].fileName;
+  // console.log('0: ', imageSlot[0], '1: ', imageSlot[1], '2: ', imageSlot[2]);
+  // localStorage.imageSlot0 = imageSlot[0];
   document.getElementById('prodCenter').src = products[imageSlot[1]].fileName;
+  // localStorage.imageSlot1 = imageSlot[1];
   document.getElementById('prodRight').src = products[imageSlot[2]].fileName;
+  // localStorage.imageSlot1 = imageSlot[2];
 
   products[imageSlot[0]].totalShown++;
   products[imageSlot[1]].totalShown++;
@@ -74,10 +82,26 @@ var drawProduct = function() {
 
 drawProduct();
 
+// checkForClick();
+// if (!localStorage.trialCounter) {
+//   drawProduct();
+// } else if (Number(localStorage.trialCounter) < 25) {
+//   trialCounter = Number(localStorage.trialCounter);
+//   products = JSON.parse(localStorage.products);
+//   x = Number(localStorage.imageSlot[0]);
+//   y = Number(localStorage.imageSlot[1]);
+//   z = Number(localStorage.imageSlot[2]);
+//   drawProduct();
+// } else {
+//   showResult();
+// }
+
 // Checks for clicks on the three displayed products.
+// function checkForClick() {
 document.getElementById('prodLeft').addEventListener('click', clickEvent);
 document.getElementById('prodCenter').addEventListener('click', clickEvent);
 document.getElementById('prodRight').addEventListener('click', clickEvent);
+// }
 
 // Tracks which product the user clicked on, increments the clicked counter for that product, increments the trial counter, then generates a new set of pictures.
 function clickEvent(event) {
@@ -87,6 +111,7 @@ function clickEvent(event) {
     if (targetName === products[j].name) {
       products[j].totalClicks++;
       trialCounter++;
+      // localStorage.trialCounter = trialCounter;
       break;
     }
   }
@@ -104,17 +129,13 @@ function showResult() {
   document.getElementById('prodRight').removeEventListener('click', clickEvent);
   var capitalizedName;
   for (var l = 0; l < products.length; l++) {
-    productsShown.push(products[l].totalShown);
-    productsClicked.push(products[l].totalClicks);
+    productsShown[l] = ((productsShown[l] || 0) + products[l].totalShown);
+    productsClicked[l] = ((productsClicked[l] || 0) + products[l].totalClicks);
     capitalizedName = capitalizeName(products[l].name);
     productsNames.push(capitalizedName);
   }
-  // var li = '';
-  // var ul = document.getElementById('results');
-  // for (var i = 0;i < products.length; i++) {
-  //   li = li + '<li>' + products[i].totalClicks + ' click out of ' + products[i].totalShown + ' for the ' + products[i].name + '</li>';
-  // }
-  // ul.innerHTML = li;
+  localStorage.productsShown = JSON.stringify(productsShown);
+  localStorage.productsClicked = JSON.stringify(productsClicked);
   makeChart();
 }
 
@@ -128,7 +149,7 @@ function capitalizeName(name) {
 }
 
 // Draws the chart
-var makeChart = function() {
+function makeChart() {
   var ctx = document.getElementById('productChart').getContext('2d');
   ctx.canvas.width = '960';
   ctx.canvas.height = '250';
