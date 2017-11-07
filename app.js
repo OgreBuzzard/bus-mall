@@ -160,14 +160,14 @@ function makeChart() {
       datasets: [{
         label: 'Times Shown',
         data: productsShown,
-        backgroundColor: '#27AE60',
+        backgroundColor: 'darkred',
         borderColor: '#000',
         borderWidth: 1
       },
       {
         label: 'Times Selected',
         data: productsClicked,
-        backgroundColor: '#F39C12',
+        backgroundColor: '#008B8B',
         borderColor: '#000',
         borderWidth: 1
       }]
