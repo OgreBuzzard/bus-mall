@@ -104,6 +104,8 @@ ul {
 }
 
 p {
+  font-family: Helvetica;
   font-weight: bold;
+  text-align: center;
   margin: 5px;
 }
